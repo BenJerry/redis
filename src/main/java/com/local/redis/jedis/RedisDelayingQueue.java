@@ -2,6 +2,7 @@ package com.local.redis.jedis;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.local.redis.utils.RedisUtils;
 import redis.clients.jedis.Jedis;
 
 import java.lang.reflect.Type;
@@ -56,7 +57,32 @@ public class RedisDelayingQueue<T> {
         System.out.println(msg);
     }
 
-
+    public static void main(String[] args) {
+        Jedis jedis = RedisUtils.startJedis();
+        RedisDelayingQueue<String> queue = new RedisDelayingQueue<>(jedis, "q-demo");
+        Thread producer = new Thread() {
+            @Override
+            public void run() {
+                for(int i = 0; i < 10; i ++) {
+                    queue.delay("codehole" + i);
+                }
+            }
+        };
+        Thread consumer = new Thread() {
+            @Override
+            public void run() {
+                queue.loop();
+            }
+        };
+        producer.start();
+        consumer.start();
+        try{
+            producer.join();
+            Thread.sleep(6000);
+            consumer.interrupt();
+            consumer.join();
+        } catch (InterruptedException e) {}
+    }
 
 
 }

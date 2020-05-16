@@ -9,8 +9,8 @@ import java.util.Set;
 public class JdkSerializeTest {
 
     public static void main(String[] args) throws IOException {
-        Jedis jedis = new Jedis("106.54.45.57", 6379);
-        jedis.auth("bsy@123");
+        Jedis jedis = new Jedis("xxxxxxxxx", 6379);
+        jedis.auth("xxxxx");
         jedis.connect();
 
         User user = createUser();
